@@ -40,16 +40,7 @@ layout {
     border {
         off
     }
-
-    struts {
-        // Reserve space for the top bar and the left dock so windows
-        // never tile underneath them. Adjust if you resize either.
-        left 84
-        top 34
-    }
 }
-
-prefer-no-csd
 
 hotkey-overlay {
     skip-at-startup
@@ -65,60 +56,241 @@ environment {
 // ---- Startup ----
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "waybar"
-spawn-at-startup "mako"
-spawn-at-startup "nwg-dock" "-i" "56" "-w" "72"
-spawn-sh-at-startup "swaybg -i ~/Pictures/wallpaper.jpg -m fill || true"
+spawn-at-startup "dunst"
+spawn-at-startup "awww-daemon"
+spawn-sh-at-startup "awww img /home/shippus/Pictures/Wallpapers/wallhaven-dg2gvm.jpg"
 // Polkit agent
-//spawn-at-startup "/usr/libexec/mate-polkit/polkit-mate-authentication-agent-1"
+spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 
 // ---- Keybinds ----
+// Keys are modifiers joined by "+", ending in an XKB key name (use `wev` to
+// find names). "Mod" is Super on a TTY, Alt when niri runs nested in a window.
+// Almost every action here can also be triggered with `niri msg action <name>`.
 binds {
-    Mod+Return { spawn "ghostty"; }
-    Mod+D { spawn "rofi" "-show" "drun"; }
-    Mod+Tab { spawn "rofi" "-show" "window"; }
-    Mod+Q { close-window; }
-    Mod+Shift+E { quit; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // ---- Applications ----
+    Mod+Return hotkey-overlay-title="Open a Terminal: ghostty" { spawn "ghostty"; }
+    Mod+T      hotkey-overlay-title="Open a Terminal: ghostty" { spawn "ghostty"; }
+    Mod+Space      hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
+    Mod+E hotkey-overlay-title="Open the file explorer: nautilus" { spawn "nautilus"; }
+
+    // ---- Overview ----
+    // Zoomed-out view of all workspaces and windows. Also reachable via the
+    // top-left hot corner or a four-finger swipe up on the touchpad.
+    Mod+O repeat=false { toggle-overview; }
+
+    // ---- Focus ----
+    Mod+Q repeat=false { close-window; }
 
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
     Mod+Down  { focus-window-down; }
     Mod+Up    { focus-window-up; }
 
-    Mod+Shift+Left  { move-column-left; }
-    Mod+Shift+Right { move-column-right; }
-    Mod+Shift+Down  { move-window-down; }
-    Mod+Shift+Up    { move-window-up; }
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
 
+    // Alternatives that roll over into the next workspace at the end of a column:
+    // Mod+J { focus-window-or-workspace-down; }
+    // Mod+K { focus-window-or-workspace-up; }
+
+    Mod+Home      { focus-column-first; }
+    Mod+End       { focus-column-last; }
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    // ---- Moving windows ----
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+
+    Mod+Ctrl+H { move-column-left; }
+    Mod+Ctrl+J { move-window-down; }
+    Mod+Ctrl+K { move-window-up; }
+    Mod+Ctrl+L { move-column-right; }
+
+    // ---- Monitors ----
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+
+    Mod+Shift+H { focus-monitor-left; }
+    Mod+Shift+J { focus-monitor-down; }
+    Mod+Shift+K { focus-monitor-up; }
+    Mod+Shift+L { focus-monitor-right; }
+
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
+
+    // There are also move-window-to-monitor-* and move-workspace-to-monitor-*
+    // variants if you prefer moving a single window or a whole workspace.
+
+    // ---- Workspaces ----
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+U { focus-workspace-down; }
+    Mod+I { focus-workspace-up; }
+
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U { move-column-to-workspace-down; }
+    Mod+Ctrl+I { move-column-to-workspace-up; }
+
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U { move-workspace-down; }
+    Mod+Shift+I { move-workspace-up; }
+
+    // Toggle between the current and the previously focused workspace.
+    // Mod+Tab { focus-workspace-previous; }
+
+    // Workspaces are dynamic, so an index past the last one lands on the
+    // bottommost empty workspace rather than creating a gap.
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
     Mod+3 { focus-workspace 3; }
     Mod+4 { focus-workspace 4; }
     Mod+5 { focus-workspace 5; }
-    Mod+Shift+1 { move-window-to-workspace 1; }
-    Mod+Shift+2 { move-window-to-workspace 2; }
-    Mod+Shift+3 { move-window-to-workspace 3; }
-    Mod+Shift+4 { move-window-to-workspace 4; }
-    Mod+Shift+5 { move-window-to-workspace 5; }
-    Mod+Page_Down { focus-workspace-down; }
-    Mod+Page_Up   { focus-workspace-up; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
 
-    Mod+F { maximize-column; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    // If you'd rather move just the focused window than the whole column,
+    // swap the action above, e.g.:
+    // Mod+Ctrl+1 { move-window-to-workspace 1; }
+
+    // ---- Mouse wheel ----
+    // These flip direction with the natural-scroll setting. cooldown-ms
+    // rate-limits the bind so you don't fly through workspaces.
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
+    // Shift+wheel scrolls horizontally in most apps; these mirror that.
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    // Touchpad scrolling is continuous, split into discrete ticks for binds.
+    // These examples read "inverted" because natural-scroll is on above.
+    // Mod+TouchpadScrollDown { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+"; }
+    // Mod+TouchpadScrollUp   { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }
+
+    // ---- Columns ----
+    // Move the focused window into or out of a column. If it's alone, it gets
+    // consumed into the neighbouring column; if it's already in one, it's expelled.
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    // Pull the window on the right into the bottom of this column.
+    Mod+Comma  { consume-window-into-column; }
+    // Push the bottom window of this column out to the right.
+    Mod+Period { expel-window-from-column; }
+
+    // Tabbed column display: windows stack as vertical tabs.
+    Mod+W { toggle-column-tabbed-display; }
+
+    // ---- Sizing ----
+    Mod+R            { switch-preset-column-width; }
+    Mod+Shift+R      { switch-preset-column-width-back; }
+    Mod+Ctrl+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R       { reset-window-height; }
+
+    Mod+F       { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
-    Mod+C { center-column; }
-    Mod+R { switch-preset-column-width; }
+    // maximize-column keeps gaps and borders; this one runs to the screen edges,
+    // matching what double-clicking a titlebar normally does.
+    Mod+M { maximize-window-to-edges; }
+    // Grow the column into whatever space the other visible columns aren't using.
+    Mod+Ctrl+F { expand-column-to-available-width; }
 
-    Mod+Shift+Slash { show-hotkey-overlay; }
-    Print { screenshot; }
-    Mod+Print { screenshot-window; }
-    Ctrl+Print { screenshot-screen; }
+    Mod+C      { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
 
-    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute        { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86MonBrightnessUp   { spawn "brightnessctl" "set" "5%+"; }
-    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+    // Finer adjustments. These also accept "1000" (px), "25%", "-5", "+10%", etc.
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    // ---- Floating ----
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    // ---- Keyboard layouts ----
+    // Only enable these if you do NOT have an xkb layout-switch option set,
+    // otherwise the layout switches twice per press.
+    // Mod+Space       { switch-layout "next"; }
+    // Mod+Shift+Space { switch-layout "prev"; }
+
+    // ---- Screenshots ----
+    Mod+Shift+S hotkey-overlay-title="Screenshot a region" { screenshot; }
+    Print       { screenshot; }
+    Ctrl+Print  { screenshot-screen; }
+    Mod+Print   { screenshot-window; }
+    Alt+Print   { screenshot-window; }
+
+    // ---- Media & brightness ----
+    // allow-when-locked=true lets these work on the lock screen.
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+" "-l" "1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    // Works with any MPRIS-enabled player.
+    XF86AudioPlay  allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioPause allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop  allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev  allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext  allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
+
+    // ---- Session ----
+    // Remote-desktop clients and software KVMs can ask niri to stop handling
+    // shortcuts so they can forward keys. This is the escape hatch out of that;
+    // allow-inhibiting=false guarantees niri always processes it.
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    // quit shows a confirmation dialog, so it won't drop your session by accident.
+    Mod+Shift+E     { quit; }
+    Ctrl+Alt+Delete { quit; }
 
     Mod+Shift+P { spawn "systemctl" "suspend"; }
+    // Upstream puts power-off-monitors on Mod+Shift+P, which you use for
+    // suspend, so it lives here instead. Any input turns the monitors back on.
+    Mod+Shift+Ctrl+P { power-off-monitors; }
 }
 
 // ---- Layer / window rules ----
@@ -128,6 +300,6 @@ layer-rule {
 }
 
 window-rule {
-    match app-id="^org\.gnome\.Nautilus$"
+    match app-id="^org\\.gnome\\.Nautilus$"
     default-column-width { proportion 0.4; }
 }
