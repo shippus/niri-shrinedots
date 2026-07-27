@@ -1,0 +1,83 @@
+// ~/.config/waybar/config.jsonc
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "margin-top": 6,
+  "margin-left": 8,
+  "margin-right": 8,
+  "spacing": 6,
+
+  "modules-left": ["niri/workspaces"],
+  "modules-center": ["clock", "mpris"],
+  "modules-right": ["tray", "memory", "network", "pulseaudio", "custom/power"],
+
+  "niri/workspaces": {
+    "format": "{value}",
+    "disable-scroll": false,
+    "all-outputs": false
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "format": {
+        "today": "<span color='#C9242B'><b>{}</b></span>"
+      }
+    }
+  },
+
+  "mpris": {
+    "format": "{status_icon}  {dynamic}",
+    "dynamic-order": ["artist", "title"],
+    "dynamic-separator": " - ",
+    "dynamic-len": 45,
+    "status-icons": {
+      "playing": "",
+      "paused": "",
+      "stopped": ""
+    },
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous"
+  },
+
+  "memory": {
+    "interval": 5,
+    "format": "Ram: {used:0.1f}G",
+    "tooltip-format": "{used:0.1f}G / {total:0.1f}G  ({percentage}%)",
+    "on-click": "ghostty -e btop"
+  },
+
+  "network": {
+    "format-wifi": "  Internet",
+    "format-ethernet": "󰈀  Internet",
+    "format-disconnected": "  Offline",
+    "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ipaddr}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "on-click": "ghostty -e nmtui"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-muted": "  muted",
+    "format-icons": {
+      "headphone": "",
+      "headset": "",
+      "hands-free": "",
+      "default": ["", "", ""]
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+  },
+
+  "custom/power": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "wlogout"
+  }
+}

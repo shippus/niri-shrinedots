@@ -1,0 +1,120 @@
+/* ~/.config/waybar/style.css */
+
+@define-color bg      rgba(12, 8, 8, 0.88);
+@define-color bg-hi   rgba(28, 16, 16, 0.95);
+@define-color edge    rgba(201, 36, 43, 0.30);
+@define-color cream   #F5EAD0;
+@define-color muted   #7a4a44;
+@define-color red     #C9242B;
+@define-color ink     #140A0A;
+
+* {
+  font-family: "Tinos Nerd Font", "Symbols Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+}
+
+window#waybar {
+  background: transparent;
+}
+
+tooltip {
+  background: @bg-hi;
+  border: 1px solid @edge;
+  border-radius: 8px;
+  color: @cream;
+}
+
+/* ---- shared pill ---- */
+#workspaces,
+#clock,
+#mpris,
+#memory,
+#network,
+#pulseaudio {
+  background: @bg;
+  color: @cream;
+  border: 1px solid @edge;
+  border-radius: 8px;
+  padding: 2px 12px;
+  margin: 0;
+}
+
+/* ---- workspaces ---- */
+#workspaces {
+  padding: 2px 6px;
+}
+
+#workspaces button {
+  background: transparent;
+  color: @muted;
+  font-size: 12px;
+  padding: 0 5px;
+  margin: 0;
+  min-width: 0;
+  border-radius: 6px;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+#workspaces button.empty {
+  color: @muted;
+}
+
+#workspaces button.active {
+  color: #d8c3ae;
+}
+
+#workspaces button.focused {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
+}
+
+#workspaces button.urgent {
+  color: @red;
+}
+
+#workspaces button:hover {
+  background: rgba(201, 36, 43, 0.20);
+  color: @cream;
+}
+
+/* ---- center ---- */
+#clock {
+  padding: 2px 14px;
+  letter-spacing: 0.5px;
+}
+
+#mpris {
+  padding: 2px 14px;
+}
+
+#mpris.paused {
+  color: @muted;
+}
+
+/* ---- right ---- */
+#memory.critical,
+#pulseaudio.muted,
+#network.disconnected {
+  color: @red;
+}
+
+/* ---- power button ---- */
+#custom-power {
+  background: @red;
+  color: @ink;
+  font-size: 13px;
+  border-radius: 50%;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  transition: background 150ms ease;
+}
+
+#custom-power:hover {
+  background: #e8353d;
+}
